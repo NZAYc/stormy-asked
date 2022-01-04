@@ -4,8 +4,9 @@ import time
 from dataclasses import dataclass
 
 '''
-Copyright (c) 2021 Adolf and Stormy <---- aka "The Retards"
-And Larsy <---- aka "the Functioning Brain"
+Copyright (c) 2021 Adolf and Stormy
+
+Other contributors: TrollerOfHolland
 
 Permission is hereby NOT granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
