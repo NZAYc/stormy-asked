@@ -6,6 +6,8 @@ from dataclasses import dataclass
 '''
 Copyright (c) 2021 Adolf and Stormy
 
+Other contributors: TrollerOfHolland
+
 Permission is hereby NOT granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -32,18 +34,19 @@ def askPlayer(question):
     answer = input(question)
     return answer.lower().strip()
 
-
-def coolTransition():
-    time.sleep(0.25)
-    print(".")
-    time.sleep(0.25)
-    print(".")
-    time.sleep(0.25)
-    print(".")
-    time.sleep(0.25)
+def delayPrint(text, delay):
+    print(text)
+    time.sleep(delay)
 
 
-class entity():
+def coolTransition(delay = 0):
+    time.sleep(0.25)
+    for i in range(3):
+        delayPrint(".", 0.25)
+
+    time.sleep(delay)
+
+class entity:
     def __init__(self, name="Default Entity", health=100, strength=10, speed=10, xp=0, energy=100):
         self.name = name
         self.health = health
@@ -53,8 +56,7 @@ class entity():
         self.energy = energy
 
 
-player = entity()
-player.name = input("Enter your name: ").strip()
+player = entity(input("Enter your name: ").strip())
 print(f"Welcome, {player.name}.")
 
 ilkhar = entity("Ilkhar", strength=5, speed=20, xp=100)
@@ -91,32 +93,29 @@ def calculateAttack(enemy):
 
 
 def fight(enemy):
-    print(f"Battling {enemy.name}!")
-    time.sleep(1)
+    delayPrint(f"Battling {enemy.name}!", 1)
 
-    fightOver = False
-    while fightOver == False and player.health > 1 and enemy.health > 1:
+    while True:
         # Player attack
         coolTransition()
         calculateAttack(enemy)
+
+        #checking enemy hp before handling player attacks
+        if(enemy.health < 1): 
+            print(f"{enemy.name} is dead. {player.name} has gained {enemy.xp} experience.")
+            player.xp += enemy.xp
+            break
+
         # Enemy attack
         coolTransition()
-        print(f"{enemy.name} IS ATTACKING")
-        time.sleep(0.1)
+        delayPrint(f"{enemy.name} IS ATTACKING", 0.1)
         player.health -= enemy.strength
         print(f"{player.name} took {enemy.strength} damage!")
 
-        if player.health == 0 or enemy.health == 0:
-            fightOver = True
-
-    if(player.health < 1):
-        print(f"{player.name} has died.")
-        print("Game over.")
-        sys.exit()
-
-    if(enemy.health < 1):
-        print(f"{enemy.name} is dead. {player.name} has gained {enemy.xp} experience.")
-        player.xp += enemy.xp
+        if(player.health < 1):
+            print(f"{player.name} has died.")
+            print("Game over.")
+            break
 
 
 if askPlayer("Do you wish to start the game? (yes/no): ") == 'yes':
@@ -124,34 +123,25 @@ if askPlayer("Do you wish to start the game? (yes/no): ") == 'yes':
     time.sleep(1)
     if askPlayer("You encounter a divergence in the road, do you go left or right? (left/right) : ") == "left":
         coolTransition()
-        print("An Ilkhar jumps out of the shrubbery with an intent to rape.")
-        time.sleep(1)
+        delayPrint("An Ilkhar jumps out of the shrubbery with an intent to rape.", 1)
         if(ilkhar.speed > player.speed):
-            print(
-                "It appears the Ilkhar is faster. Running away will probably end in disaster.")
-            time.sleep(1)
+            delayPrint("It appears the Ilkhar is faster. Running away will probably end in disaster.", 1)
         if askPlayer("Do you engage in combat or run away? (combat/run): ") == 'combat':
-            coolTransition()
-            time.sleep(1)
-            print("Battle begins.")
-            time.sleep(1)
+            coolTransition(delay = 1)
+            delayPrint("Battle begins.", 1)
             ilkhar.name = "Ilkhar"
             fight(ilkhar)
         else:  # runs away
-            coolTransition()
-            time.sleep(1)
-            print("Ilkhar catches up to you and rapes you")
-            time.sleep(1)
+            coolTransition(delay = 1)
+            delayPrint("Ilkhar catches up to you and rapes you", 1)
             print("Game over")
             sys.exit()
     else:  # right
         coolTransition()
-        print("You keep going down the faggot ass road, when suddenly you encounter a cave entrence!")
-        time.sleep(1)
+        delayPrint("You keep going down the faggot ass road, when suddenly you encounter a cave entrence!", 1)
         if askPlayer("Do you enter? (yes/no) : ") == 'yes':
             time.sleep(1)
-            print("A figure shrouded in pure blackness approaches")
-            time.sleep(1)
+            delayPrint("A figure shrouded in pure blackness approaches", 1)
             print("It is Kakapoop")
 else:
     print("Nigger cracker kike fag gypsie muzzie chink")
