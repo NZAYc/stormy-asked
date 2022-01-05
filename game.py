@@ -31,7 +31,7 @@ def getPlayerInput(question):
 
 def delayPrint(text, delay):
     print(text)
-    #time.sleep(delay)
+    time.sleep(delay)
 
 def coolTransition(delay=0.25):
     time.sleep(delay)
