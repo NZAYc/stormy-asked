@@ -8,13 +8,13 @@ A simple turn-based dungeon explorer, played on your terminal.
 
 ## changelog
 
-### v1.1
+### v1.1 (Alpha)
 - `delayPrint()` a function to both print and delay for a variable amount of time
 - `coolTransition()` added an optional amount of time to sleep to the after the transition
 - removed 2 useless brackets for maximum efficiency
 - enemy can not attack the player when it is dead
 
-### v1
+### v1 (Alpha)
 - made the code actually run
 - cleaned up random code segments
 - enemies fight back
@@ -23,5 +23,5 @@ A simple turn-based dungeon explorer, played on your terminal.
 - `coolTransition()` is cleaner
 - other shit i forgot about
 
-### v0.1
+### v0.1 (Alpha)
 - Uploaded initial code
