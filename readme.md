@@ -4,7 +4,6 @@ Fork of the original Fentanyl Quest.
 A simple turn-based dungeon explorer, played on your terminal.
 
 ## TODO
-- [ ] Finish kakapoop path
 - [ ] Save progress to disk
 - [ ] More story
 
@@ -12,6 +11,11 @@ A simple turn-based dungeon explorer, played on your terminal.
 - [ ] Different classes for each attack?
 
 ## changelog
+
+### v1.4 (Alpha)
+- `defaultAttack()` changed the default attack values
+- `criticalHit()` added a critical hit system
+- finished Kakapoop path :)
 
 ### v1.3 (Alpha)    
 - `time.sleep()` removed some non needed statements

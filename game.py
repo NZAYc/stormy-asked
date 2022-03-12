@@ -27,11 +27,11 @@ SOFTWARE.
 
 def getPlayerInput(question):
     answer = input(question)
-    return answer.lower().strip()
+    return answer.lower().strip() 
 
 def delayPrint(text, delay):
     print(text)
-    time.sleep(delay)
+    time.sleep(delay) 
 
 def coolTransition(delay=0.25):
     time.sleep(delay)
@@ -50,19 +50,33 @@ class entity:
     def __init__(self, name="Default Entity"):
         self.name = name
 
+    def criticalHit(self, chance=10, bonus=10):
+        criticalHit = 0
+        if random.randint(1, chance) == 1:
+            bonus = random.randint(1, bonus)
+            criticalHit += bonus
+            if(self.name == "Kakapoop"):
+                print(f"Kakapoop calls upon the might of Allah, inshallah! +{bonus} DAMAGE!")
+            else:
+                print(f"CRITICAL HIT! +{bonus} DAMAGE!")
+
+        return criticalHit
+
     def defaultAttack(self, target):
-        self.energy -= 50
-        target.health -= self.strength
-        return self.strength
+        attackTypeDmg = random.randint(1, 15) + self.strength + self.criticalHit(10, 10)
+        self.energy -= 100
+        target.health -= attackTypeDmg
+        # return self.strength
+        return attackTypeDmg
 
     def fastAttack(self, target):
-        attackTypeDmg = random.randint(1, 7) + self.strength    
+        attackTypeDmg = random.randint(1, 7) + self.strength + self.criticalHit(5, 5)
         self.energy -= 50
         target.health -= attackTypeDmg
         return attackTypeDmg
 
     def hardAttack(self, target):
-        attackTypeDmg = random.randint(5, 10) + self.strength
+        attackTypeDmg = random.randint(5, 10) + self.strength + self.criticalHit(10, 40)
         self.energy -= 100
         target.health -= attackTypeDmg
         return attackTypeDmg
@@ -132,8 +146,13 @@ def main():
 
     ilkhar = entity("Ilkhar") 
     ilkhar.strength = 5
-    ilkhar.speed = 20 
+    ilkhar.speed = 20
     ilkhar.xp = 100
+
+    kakapoop = entity("Kakapoop")
+    kakapoop.strength = 10
+    kakapoop.speed = 11
+    kakapoop.xp = 250
 
     print(f"Welcome, {player.name}.")
     if getPlayerInput("Do you wish to start the game? (yes/no): ") == 'yes':
@@ -164,6 +183,21 @@ def main():
                 time.sleep(1)
                 delayPrint("A figure shrouded in pure blackness approaches", 1)
                 print("It is Kakapoop")
+            if(kakapoop.speed > player.speed):
+                delayPrint(
+                    "It appears the Kakapoop is faster. Running away will probably end in disaster.", 1)
+            if getPlayerInput("Do you engage in combat or run away? (combat/run): ") == 'combat':
+                coolTransition()
+                delayPrint("Battle begins.", 1)
+                fight(player, kakapoop)
+            else:  # runs away
+                coolTransition()
+                delayPrint("Kakapoop catches up to you and converts you to the true path. Inshallah!", 1)
+                print("Game over")
+                sys.exit()
+                
+                #TODO:  make it download the entire kuran on disk C
+                
     else:
         print("Nigger cracker kike fag gypsie muzzie chink")
         sys.exit()
