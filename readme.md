@@ -3,14 +3,16 @@
 Fork of the original Fentanyl Quest.
 A simple turn-based dungeon explorer, played on your terminal.
 
-## TODO
-- [ ] Save progress to disk
-- [ ] More story
-
-## Maybe TODO (ideas)
-- [ ] Different classes for each attack?
-
 ## changelog
+
+### v1.5 (Alpha)
+- split different portions of code into their own files
+- added `inventory[]` to `entity` class
+- added `item` class
+- added `Ilkhar's migration raft` item
+- added config file
+- re-added debug mode
+- moved initial question into the `if main` portion for less indentation
 
 ### v1.4 (Alpha)
 - `defaultAttack()` changed the default attack values
