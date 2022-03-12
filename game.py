@@ -1,14 +1,12 @@
 import random
 import sys
 import time
-from dataclasses import dataclass
 
 '''
 Copyright (c) 2021 Adolf and Stormy
+Notable contributors: TrollerOfHolland
 
-Other contributors: TrollerOfHolland
-
-Permission is hereby NOT granted, free of charge, to any person obtaining a copy
+Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -25,12 +23,9 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-Stealing niggas gotta pay royalties
 '''
 
-
-def askPlayer(question):
+def getPlayerInput(question):
     answer = input(question)
     return answer.lower().strip()
 
@@ -38,111 +33,140 @@ def delayPrint(text, delay):
     print(text)
     time.sleep(delay)
 
-
-def coolTransition(delay = 0):
-    time.sleep(0.25)
+def coolTransition(delay=0.25):
+    time.sleep(delay)
     for i in range(3):
-        delayPrint(".", 0.25)
-
+        delayPrint(".", delay)
     time.sleep(delay)
 
 class entity:
-    def __init__(self, name="Default Entity", health=100, strength=10, speed=10, xp=0, energy=100):
+    name = "Default Entity"
+    health = 100
+    strength = 10
+    speed = 10
+    xp = 0
+    energy = 100
+
+    def __init__(self, name="Default Entity"):
         self.name = name
-        self.health = health
-        self.strength = strength
-        self.speed = speed
-        self.xp = xp
-        self.energy = energy
 
+    def defaultAttack(self, target):
+        self.energy -= 50
+        target.health -= self.strength
+        return self.strength
 
-player = entity(input("Enter your name: ").strip())
-print(f"Welcome, {player.name}.")
+    def fastAttack(self, target):
+        attackTypeDmg = random.randint(1, 7) + self.strength    
+        self.energy -= 50
+        target.health -= attackTypeDmg
+        return attackTypeDmg
 
-ilkhar = entity("Ilkhar", strength=5, speed=20, xp=100)
+    def hardAttack(self, target):
+        attackTypeDmg = random.randint(5, 10) + self.strength
+        self.energy -= 100
+        target.health -= attackTypeDmg
+        return attackTypeDmg
 
+def handleAttack(attacker, defender):
+    time.sleep(0.1)
+    print(f"===\n{attacker.name}: {attacker.health}HP, {attacker.strength}STR")
+    delayPrint(f"{defender.name}: {defender.health}HP, {defender.strength}STR\n===", 0.1)
+    delayPrint(f"{attacker.name} IS ATTACKING", 0.6)
+    while (attacker.energy > 0) and (defender.health > 0):
 
-def calculateAttack(enemy):
-    print(f"{player.name} IS ATTACKING")
-    while (player.energy > 0):
+        attackType = getPlayerInput("Pick an attack: (hard attack/fast attack) : ")
         time.sleep(0.1)
-        attackType = askPlayer("Pick an attack: (hard attack/fast attack) : ")
 
-        attackTypeDmg1 = 0
         totalDmg = 0
-
         if attackType == "hard attack":
-            if(player.energy < 100):
-                print("Too tired to do a hard attack now.")
+            if(attacker.energy < 100):
+                delayPrint("Too tired to do a hard attack now.", 0.4)
             else:
-                attackTypeDmg = random.randint(5, 10) + enemy.strength
-                enemy.health -= attackTypeDmg
-                print(f"{enemy.name} took {attackTypeDmg} damage!")
-                totalDmg += attackTypeDmg + attackTypeDmg1
-                print(f"Total damage dealt: {totalDmg}")
-                player.energy -= 100
+                attackDmg = attacker.hardAttack(defender)
+                totalDmg += attackDmg
+                delayPrint(f"{defender.name} took {attackDmg} damage!", 0.6)
 
         elif attackType == "fast attack":
-            attackTypeDmg = random.randint(1, 7) + enemy.strength
-            enemy.health -= attackTypeDmg
-            print(f"{enemy.name} took {attackTypeDmg} damage!")
-            player.energy -= 50
+            attackDmg = attacker.fastAttack(defender)
+            totalDmg += attackDmg
+            delayPrint(f"{defender.name} took {attackDmg} damage!", 0.5)
 
-    print(f"{player.name} ran out of energy.")
-    player.energy = 100  # reset every turn?
+    # out of loop, attacker's turn is done
+    attacker.energy = 100
+    time.sleep(0.15)
+    print(f"Total damage dealt: {totalDmg}")
+
+    if(defender.health <= 0):
+        return
+
+    coolTransition()
+    delayPrint(f"{defender.name} IS ATTACKING", 0.2)
+    while (defender.energy > 0):
+        attackDmg = defender.defaultAttack(attacker)
+        delayPrint(f"{attacker.name} took {attackDmg} damage!", 0.1)
+
+    defender.energy = 100
 
 
-def fight(enemy):
+def fight(player, enemy):
     delayPrint(f"Battling {enemy.name}!", 1)
 
     while True:
-        # Player attack
         coolTransition()
-        calculateAttack(enemy)
-
-        #checking enemy hp before handling player attacks
-        if(enemy.health < 1): 
-            print(f"{enemy.name} is dead. {player.name} has gained {enemy.xp} experience.")
-            player.xp += enemy.xp
-            break
-
-        # Enemy attack
-        coolTransition()
-        delayPrint(f"{enemy.name} IS ATTACKING", 0.1)
-        player.health -= enemy.strength
-        print(f"{player.name} took {enemy.strength} damage!")
+        # completes one turn of attack for both args
+        handleAttack(player, enemy)
 
         if(player.health < 1):
             print(f"{player.name} has died.")
             print("Game over.")
+            sys.exit(0)
+
+        elif(enemy.health < 1):
+            player.xp += enemy.xp
+            print(f"{enemy.name} has died. {player.name} has gained {enemy.xp} xp.")
             break
 
 
-if askPlayer("Do you wish to start the game? (yes/no): ") == 'yes':
-    print("You are a random ass faggot adventurer going down a gay ass road")
-    time.sleep(1)
-    if askPlayer("You encounter a divergence in the road, do you go left or right? (left/right) : ") == "left":
+def main():
+    player = entity(input("Enter your name: ").strip())
+
+    ilkhar = entity("Ilkhar") 
+    ilkhar.strength = 5
+    ilkhar.speed = 20 
+    ilkhar.xp = 100
+
+    print(f"Welcome, {player.name}.")
+    if getPlayerInput("Do you wish to start the game? (yes/no): ") == 'yes':
         coolTransition()
-        delayPrint("An Ilkhar jumps out of the shrubbery with an intent to rape.", 1)
-        if(ilkhar.speed > player.speed):
-            delayPrint("It appears the Ilkhar is faster. Running away will probably end in disaster.", 1)
-        if askPlayer("Do you engage in combat or run away? (combat/run): ") == 'combat':
-            coolTransition(delay = 1)
-            delayPrint("Battle begins.", 1)
-            ilkhar.name = "Ilkhar"
-            fight(ilkhar)
-        else:  # runs away
-            coolTransition(delay = 1)
-            delayPrint("Ilkhar catches up to you and rapes you", 1)
-            print("Game over")
-            sys.exit()
-    else:  # right
-        coolTransition()
-        delayPrint("You keep going down the faggot ass road, when suddenly you encounter a cave entrence!", 1)
-        if askPlayer("Do you enter? (yes/no) : ") == 'yes':
-            time.sleep(1)
-            delayPrint("A figure shrouded in pure blackness approaches", 1)
-            print("It is Kakapoop")
-else:
-    print("Nigger cracker kike fag gypsie muzzie chink")
-    sys.exit()
+        print("You are a random ass faggot adventurer going down a gay ass road")
+        time.sleep(1)
+        if getPlayerInput("You encounter a divergence in the road, do you go left or right? (left/right) : ") == "left":
+            coolTransition()
+            delayPrint(
+                "An Ilkhar jumps out of the shrubbery with an intent to rape.", 1)
+            if(ilkhar.speed > player.speed):
+                delayPrint(
+                    "It appears the Ilkhar is faster. Running away will probably end in disaster.", 1)
+            if getPlayerInput("Do you engage in combat or run away? (combat/run): ") == 'combat':
+                coolTransition()
+                delayPrint("Battle begins.", 1)
+                fight(player, ilkhar)
+            else:  # runs away
+                coolTransition()
+                delayPrint("Ilkhar catches up to you and rapes you", 1)
+                print("Game over")
+                sys.exit()
+        else:  # right
+            coolTransition()
+            delayPrint(
+                "You keep going down the faggot ass road, when suddenly you encounter a cave entrence!", 1)
+            if getPlayerInput("Do you enter? (yes/no) : ") == 'yes':
+                time.sleep(1)
+                delayPrint("A figure shrouded in pure blackness approaches", 1)
+                print("It is Kakapoop")
+    else:
+        print("Nigger cracker kike fag gypsie muzzie chink")
+        sys.exit()
+
+if __name__ == "__main__":
+    main()
